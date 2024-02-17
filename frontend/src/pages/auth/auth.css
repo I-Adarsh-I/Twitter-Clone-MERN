@@ -1,0 +1,25 @@
+.main{
+    background-color: #212a31;
+}
+.login-main-con{
+    height: 100vh;
+}
+.login-card{
+    width: 40%;
+}
+.floating-labels:focus{
+    background: none;
+}
+.form-floating>.form-control:focus{
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+}
+
+
+
+@media screen and (max-width: 480px) {
+    .login-card{
+        width: 100%;
+    }
+    
+}
