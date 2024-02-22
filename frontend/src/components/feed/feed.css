@@ -1,0 +1,10 @@
+.feed-main{
+    width: 74%;
+}
+.avatar{
+    height: 50px;
+    width: 50px;
+}
+textarea#description.post-textbox:focus {
+    outline: none;
+}

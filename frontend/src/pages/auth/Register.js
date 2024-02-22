@@ -60,7 +60,7 @@ function Login() {
               
               <p className="text-secondary mt-4">
                Already have an account?{" "}
-                <Link to="/" className="text-decoration-none">
+                <Link to="/login" className="text-decoration-none">
                   Login
                 </Link>
               </p>
