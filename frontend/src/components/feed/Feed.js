@@ -1,20 +1,21 @@
 import React from "react";
 import Avatar from "../../components/avatar/Avatar";
 import "./feed.css";
+import Post from "../post/Post";
 
 const Feed = () => {
   const imgUrl =
     "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
 
   return (
-    <div className="feed-main mx-4">
+    <div className="feed-main">
       <div className="top-nav d-flex align-items-center justify-content-between my-2">
         <div className="h5">Home</div>
       </div>
       <hr />
       <div className="card border-dark-subtle bg-transparent p-2 border-0">
         <div className="d-flex gap-3 ">
-          <div className="r-post-con">
+          <div className="l-post-con">
             <div className="avatar name-n-avatar rounded-pill overflow-hidden">
               <Avatar image={imgUrl} />
             </div>
@@ -30,9 +31,13 @@ const Feed = () => {
                 className="post-textbox w-100 bg-transparent text-white border-0 fs-4 pb-3"
               ></textarea>
             </form>
-            <hr className="border" />
+            <hr className="border border-opacity-10" />
             <div className="d-flex justify-content-between align-items-center">
-            <i class="fa-regular fa-image fa-lg" style={{color:'#1679BB'}} role="button"></i>
+              <i
+                class="fa-regular fa-image fa-lg"
+                style={{ color: "#1679BB" }}
+                role="button"
+              ></i>
               <button className="btn btn-primary rounded-pill px-4">
                 Post
               </button>
@@ -40,7 +45,10 @@ const Feed = () => {
           </div>
         </div>
       </div>
-      <hr />
+      <hr className="opacity-25" />
+
+      {/* post */}
+      <Post />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 .sidebar-main{
-    width: 18%;
+    width: 25%;
 }
 .logo-con{
     height: 25px;
@@ -13,14 +13,54 @@
     width: 40px;
 }
 .more-options{
+    display: flex;
     height: 35px;
     width: 35px;
 }
 .r-sidebar-main{
-    width: 18%;
+    width: 25%;
     padding: 0;
     margin: 0;
 }
 .option:hover, .more-options:hover{
     background-color: rgba(240, 240, 240, 0.08);
+}
+.open-menu{
+    display: none;
+}
+
+@media screen and (min-width: 481px) and (max-width: 780px) {
+    .nav-item{
+        display: none;
+    }
+    .name-sec{
+        display: none;
+    }
+    .more-options{
+        display: none;
+    }
+    .r-sidebar-main{
+        display: none;
+    }
+    .sidebar-main{
+        width: 15%;
+    }
+    .option{
+        padding-right: 0px !important; 
+        gap: 1em !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .open-menu{
+        display: block;
+    }
+    .r-sidebar-main{
+       display: none;
+    }
+    .sidebar-main{
+        width: 65%;
+        z-index: 2;
+    }
+    
 }
