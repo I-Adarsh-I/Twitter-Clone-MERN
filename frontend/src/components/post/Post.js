@@ -6,7 +6,7 @@ const Post = () => {
     "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
   return (
     <div>
-      <div className="post d-flex flex-column gap-3">
+      <div className="post d-flex flex-column gap-3 mx-3 my-2">
         <div className="d-flex gap-2">
           <div className="l-post-con">
             <div className="avatar name-n-avatar rounded-pill overflow-hidden">
@@ -62,7 +62,7 @@ const Post = () => {
           </div>
         </div>
       </div>
-      <hr />
+      <hr className="m-0"/>
     </div>
   );
 };

@@ -9,11 +9,11 @@ const Feed = () => {
 
   return (
     <div className="feed-main">
-      <div className="top-nav d-flex align-items-center justify-content-between my-2">
-        <div className="h5">Home</div>
+      <div className="top-nav d-flex align-items-center justify-content-between">
+        <div className="h5 mx-3">Home</div>
       </div>
-      <hr />
-      <div className="card border-dark-subtle bg-transparent p-2 border-0">
+      <hr className="m-0"/>
+      <div className="card border-dark-subtle bg-transparent p-2 border-0 mx-2">
         <div className="d-flex gap-3 ">
           <div className="l-post-con">
             <div className="avatar name-n-avatar rounded-pill overflow-hidden">
@@ -28,10 +28,9 @@ const Feed = () => {
                 cols="30"
                 rows="1"
                 placeholder="What's happening?!"
-                className="post-textbox w-100 bg-transparent text-white border-0 fs-4 pb-3"
+                className="post-textbox w-100 bg-transparent text-white fs-4 pb-3"
               ></textarea>
             </form>
-            <hr className="border border-opacity-10" />
             <div className="d-flex justify-content-between align-items-center">
               <i
                 class="fa-regular fa-image fa-lg"
@@ -45,9 +44,11 @@ const Feed = () => {
           </div>
         </div>
       </div>
-      <hr className="opacity-25" />
+      <hr className="m-0" />
 
       {/* post */}
+      <Post />
+      <Post />
       <Post />
     </div>
   );

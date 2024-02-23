@@ -1,7 +1,12 @@
 .feed-main{
     width: 50%;
-    margin: 24px;
+    margin: 12px 0;
+    overflow: hidden;
+    overflow-y: auto;
 }
+.feed-main::-webkit-scrollbar {
+    display: none;
+  }
 .icons{
     width: 30px;
     height: 30px;
@@ -13,9 +18,13 @@
 .icons:hover{
     background-color: rgba(0, 162, 255, 0.15);
 }
+.post-textbox{
+    border: none;
+}
 
 textarea#description.post-textbox:focus {
     outline: none;
+    border-bottom: 1px solid rgb(65, 65, 65);
 }
 @media screen and (min-width: 481px) and (max-width: 780px){
     .feed-main{
