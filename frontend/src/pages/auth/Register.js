@@ -5,6 +5,7 @@ import { Toaster, toast } from "alert";
 import axios from "axios";
 
 function Login() {
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const api_key = process.env.REACT_APP_BASE_API;
 
@@ -30,19 +31,22 @@ function Login() {
       email: userInput.email,
       password: userInput.password,
     };
+    setIsLoading(true);
     try {
       const resp = await axios.post(`${api_key}/signup`, request);
       if (resp.status === 200) {
-        navigate('/login');
+        setIsLoading(false);
+        navigate("/login");
         return toast.success(resp.data.message);
-      }else if(resp.status === 404) {
+      } else if (resp.status === 404) {
+        setIsLoading(false);
         return toast.error(resp.data.error);
       }
-      
       console.log(resp);
     } catch (err) {
+      setIsLoading(false);
       console.log(err.response.data);
-      return toast.error(err.response.data.error)
+      return toast.error(err.response.data.message);
     }
   };
 
@@ -126,12 +130,14 @@ function Login() {
                 onClick={signUpHandler}
               >
                 Register{" "}
-                <div
-                  className="spinner-border text-primary spinner-border-sm"
-                  role="status"
-                >
-                  <span className="visually-hidden">Loading...</span>
-                </div>
+                {isLoading && (
+                  <div
+                    className="spinner-border text-primary spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                )}
               </button>
 
               <p className="text-secondary mt-4">
@@ -144,7 +150,7 @@ function Login() {
           </form>
         </div>
       </div>
-      <Toaster />
+      <Toaster position="top-right"/>
     </div>
   );
 }

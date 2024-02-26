@@ -4,14 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "alert";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { loginRequested } from "../../redux/slices/UserSlice";
+import {
+  logginSuccessful,
+  loginError,
+  loginRequested,
+} from "../../redux/slices/UserSlice";
 
 function Login() {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const api_key = process.env.REACT_APP_BASE_API;
 
-  const userInfo = useSelector(state => state.auth);
+  const userInfo = useSelector((state) => state.auth);
   // console.log(userInfo)
 
   const [userInput, setUserInput] = useState({
@@ -38,16 +42,21 @@ function Login() {
     try {
       const resp = await axios.post(`${api_key}/login`, request);
       if (resp.status === 200) {
+        toast.success(resp.data.message);
+        localStorage.setItem("token", resp.data.token.token);
         navigate('/')
-        return toast.success(resp.data.message);
+        // console.log(resp.data.user.existingUser);
+        return dispatch(logginSuccessful(resp.data.user.existingUser));
       } else if (resp.status === 401) {
+        dispatch(loginError());
         return toast.error(resp.data.error);
       } else if (resp.status === 404) {
+        dispatch(loginError());
         return toast.error(resp.data.error);
       }
-      console.log(resp);
     } catch (err) {
       // console.log(err);
+      dispatch(loginError());
       toast.error(err.response.data.error);
     }
   };
@@ -114,12 +123,14 @@ function Login() {
                 onClick={loginHandler}
               >
                 Login
-                <div
-                  className="spinner-border text-primary spinner-border-sm ms-1"
-                  role="status"
-                >
-                  <span className="visually-hidden">Loading...</span>
-                </div>
+                {userInfo.isLoading && (
+                  <div
+                    className="spinner-border text-primary spinner-border-sm ms-1"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                )}
               </button>
               <button className="btn bg-transparent text-white border p-2 rounded-pill border-secondary">
                 Forgot password?
