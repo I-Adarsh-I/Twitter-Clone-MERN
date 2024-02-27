@@ -1,12 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./profile.css";
 import Avatar from "../../components/avatar/Avatar";
 import { Link } from "react-router-dom";
-import Post from "../post/Post";
+import UserPost from "../post/UserPost";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
+  const [userPosts, setUserPosts] = useState([]);
+
   const imgUrl =
     "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
+
+  const api_key = process.env.REACT_APP_BASE_API;
+  const token = localStorage.getItem("token");
+
+  const userInfo = useSelector(state => state.auth.user)
+
+  const userAllPosts = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const resp = await axios.get(`${api_key}/mygallery`, config);
+      if (resp.status === 200) {
+        setUserPosts(resp.data.posts);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    userAllPosts();
+  }, []);
+
   return (
     <>
       <div className="profile-main">
@@ -15,11 +47,11 @@ const Profile = () => {
             className="more-options rounded-pill align-items-center justify-content-center ms-4"
             role="button"
           >
-            <i class="fa-solid fa-arrow-left"></i>
+            <i className="fa-solid fa-arrow-left"></i>
           </div>
           <div className="mx-4">
-            <p className="m-0">Name</p>
-            <p className="m-0 text-secondary">12 Tweets</p>
+            <p className="m-0">{userInfo.fullname}</p>
+            <p className="m-0 text-secondary">{userPosts.length} Tweets</p>
           </div>
         </div>
         <div className="profile-head">
@@ -35,8 +67,8 @@ const Profile = () => {
             </div>
           </div>
           <div className="profileBiography mx-4">
-            <span>Name</span>
-            <p className="mb-3 text-secondary">@username</p>
+            <span>{userInfo.fullname}</span>
+            <p className="mb-3 text-secondary">@{userInfo.fullname}</p>
             <p
               className="m-0 mb-2"
               style={{ wordWrap: "break-word", fontSize: "15px" }}
@@ -50,13 +82,13 @@ const Profile = () => {
           >
             <div className="col col-4 d-flex gap-2 text-secondary">
               <div className="icon">
-                <i class="fa-solid fa-location-dot"></i>
+                <i className="fa-solid fa-location-dot"></i>
               </div>
               <div className="info-text">Location</div>
             </div>
             <div className="col col-4 d-flex gap-2 text-secondary">
               <div className="icon">
-                <i class="fa-solid fa-paperclip"></i>
+                <i className="fa-solid fa-paperclip"></i>
               </div>
               <div className="info-text ">
                 <Link
@@ -69,7 +101,7 @@ const Profile = () => {
             </div>
             <div className="col col-4 d-flex gap-2 text-secondary">
               <div className="icon">
-                <i class="fa-solid fa-calendar-days"></i>
+                <i className="fa-solid fa-calendar-days"></i>
               </div>
               <div className="info-text">DD-MM-YYYY</div>
             </div>
@@ -91,19 +123,9 @@ const Profile = () => {
           <hr className="m-0 mt-1" />
         </div>
         <div className="">
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
+          {userPosts.length > 0 && userPosts.map((post, index) => <UserPost key={index} allPosts={post}/>)}
+          {/* <Post />
+          <Post /> */}
         </div>
       </div>
     </>

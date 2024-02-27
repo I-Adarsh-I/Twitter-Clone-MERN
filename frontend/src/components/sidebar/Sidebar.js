@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import Avatar from "../avatar/Avatar";
 import "./sidebar.css";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const imgUrl =
     "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
+
+    const userInfo = useSelector(state => state.auth.user)
 
   return (
     <>
@@ -60,8 +63,8 @@ const Sidebar = () => {
                   />
                 </div>
                 <div className="name-sec">
-                  <h5 className="m-0">Name</h5>
-                  <p className="text-white-50 m-0">@username</p>
+                  <h5 className="m-0">{userInfo.fullname}</h5>
+                  <p className="text-white-50 m-0">@{userInfo.fullname}</p>
                 </div>
               </div>
               <div
