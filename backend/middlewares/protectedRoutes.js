@@ -9,11 +9,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 const protectedRoutes = async (req, res, next) => {
-  const token = req.cookies["User token"];
+  const { authorization } = req.headers;
 
-  if (!token) {
+  if (!authorization) {
     res.status(401).json({ error: "Login session expired" });
   } else {
+    const token = authorization.replace("Bearer ", "");
     jwt.verify(token, SECRET_KEY, (err, payload) => {
       if (err) {
         res.status(401).json({ error: "Token invalid" });

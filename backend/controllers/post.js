@@ -8,18 +8,16 @@ module.exports.createPostHandler = async (req, res) => {
   const { description, location, image } = req.body;
 
   try {
-    if (!description || !location || !image) {
+    if (!description) {
       return res
         .status(400)
-        .json({ error: "One or more mandatory fields are empty" });
+        .json({ error: "Post description cannot be empty" });
     }
 
     req.user.password = undefined;
 
     const postObj = new postModel({
       description,
-      location,
-      image,
       author: req.user,
     });
     const newPost = await postObj.save();
@@ -35,7 +33,8 @@ module.exports.showAllPosts = async (req, res) => {
   try {
     const allPosts = await postModel
       .find()
-      .populate("author", "_id fullname profileImg");
+      .populate("author", "_id fullname profileImg")
+      .populate("comments.commentedBy", "_id fullname");
     res.status(200).json({ posts: allPosts });
   } catch (err) {
     console.log(err);
@@ -130,6 +129,7 @@ module.exports.unlike = async (req, res) => {
   }
 };
 
+//Comment
 module.exports.comment = async (req, res) => {
   const { postId, commentText } = req.body;
     const comment = {
