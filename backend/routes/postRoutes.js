@@ -10,6 +10,7 @@ const {
   unlike,
   comment,
   postLikeAndUnlike,
+  retweetHandler,
 } = require("../controllers/post");
 
 router.post("/createpost", protectedRoutes, createPostHandler);
@@ -19,6 +20,7 @@ router.delete("/deletepost/:postid", protectedRoutes, deletePost);
 router.put("/like", protectedRoutes, likes);
 router.put("/unlike", protectedRoutes, unlike);
 router.put("/comment", protectedRoutes, comment);
+router.put('/retweet', protectedRoutes, retweetHandler);
 router.get('/likenunlike/:postId/like-state', protectedRoutes, postLikeAndUnlike);
 
 module.exports = router;
