@@ -16,7 +16,7 @@ router.get("/profile", protectedRoutes, (req, res) => {
   res.status(200).json({ message: "User logged in" });
 });
 router.post("/logout", logoutHandler);
-router.put("/:id/follow", protectedRoutes, followHandler);
+router.put("/follow", protectedRoutes, followHandler);
 router.put("/:id/unfollow", protectedRoutes, unFollowHandler);
 router.get('/user/:id', protectedRoutes, getAllUserDetails)
 

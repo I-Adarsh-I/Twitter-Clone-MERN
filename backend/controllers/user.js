@@ -80,7 +80,7 @@ module.exports.logoutHandler = async (req, res) => {
 //Follow handler
 module.exports.followHandler = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const {userId} = req.body;
     const currentUser = req.user;
 
     const isAlreadyFollowing = currentUser.following.some(
@@ -167,14 +167,18 @@ module.exports.unFollowHandler = async (req, res) => {
 };
 
 //Get all user
-module.exports.getAllUserDetails = async(req, res) => {
+module.exports.getAllUserDetails = async (req, res) => {
   try {
-    const { userId } = req.params.id
+    const userId = req.params.id; // Assuming userId is passed as a parameter
 
-    const userDetails = await userModel.findOne(userId).select('-password');
-    return res.status(200).json({userDetails: userDetails});
+    const userDetails = await userModel.findOne({ _id: userId }).select('-password');
+    if (!userDetails) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json({ userDetails });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
   }
-}
+};
