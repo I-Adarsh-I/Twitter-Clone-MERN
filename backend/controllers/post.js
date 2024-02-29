@@ -33,7 +33,7 @@ module.exports.showAllPosts = async (req, res) => {
   try {
     const allPosts = await postModel
       .find()
-      .populate("author", "_id fullname profileImg")
+      .populate("author", "_id fullname profileImg DOB otherLinks location followers following")
       .populate("comments.commentedBy", "_id fullname")
       .populate("retweets.retweetedBy", "_id fullname")
     res.status(200).json({ posts: allPosts });

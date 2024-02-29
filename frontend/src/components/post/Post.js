@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Avatar from "../avatar/Avatar";
 import axios from "axios";
 import { Toaster, toast } from "alert";
+import { Link } from "react-router-dom";
 
 const Post = (props) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -145,6 +146,10 @@ const Post = (props) => {
     }
   };
 
+  const opneUserProfile = () => {
+    console.log(props.allPosts.author._id)
+  }
+
   const allCommentsTillNow = props.allPosts.comments;
   
   return (
@@ -158,12 +163,12 @@ const Post = (props) => {
           </div>
           <div className="r-post-con">
             <div className="d-flex gap-2 align-items-center">
-              <h6 className="m-0">{props.allPosts.author.fullname}</h6>
+              <h6 className="m-0" onClick={opneUserProfile}><Link to={`/profile/user/${props.allPosts.author._id}`}>{props.allPosts.author.fullname}</Link></h6>
               <div className="text-secondary d-flex align-items-center gap-2">
                 <div style={{ width: "20px" }}>
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png"
-                    alt=""
+                    alt="Verified"
                     className="w-100"
                   />
                 </div>
