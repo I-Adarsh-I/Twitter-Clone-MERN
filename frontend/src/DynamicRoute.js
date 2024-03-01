@@ -20,7 +20,7 @@ function DynamicRoute() {
       }
     } else {
       localStorage.removeItem("persist:root");
-      localStorage.removeItem("Auth token");
+      localStorage.removeItem("token");
       dispatch(logout());
       if (window.location.pathname !== '/register') {
         navigate('/login');
