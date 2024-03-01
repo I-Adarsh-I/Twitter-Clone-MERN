@@ -11,6 +11,7 @@ const {
   comment,
   postLikeAndUnlike,
   retweetHandler,
+  retweetHandler2,
 } = require("../controllers/post");
 
 router.post("/createpost", protectedRoutes, createPostHandler);

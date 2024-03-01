@@ -2,16 +2,22 @@ import React, { useEffect, useState } from "react";
 import Avatar from "../avatar/Avatar";
 import axios from "axios";
 import { Toaster, toast } from "alert";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Post = (props) => {
   const [isLiked, setIsLiked] = useState(false);
   const [commentBox, setCommentBox] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [isLoggedInUser, setIsLoggedInUser] = useState(false);
+
   const imgUrl =
     "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
 
   const api_key = process.env.REACT_APP_BASE_API;
   const token = localStorage.getItem("token");
+
+  const userInfo = useSelector((state) => state.auth.user);
 
   //Like handler
   const likeHandler = async () => {
@@ -136,7 +142,7 @@ const Post = (props) => {
       if (resp.status === 200) {
         console.log(resp);
         props.getAllPosts();
-        commentText('')
+        commentText("");
         return toast("Comment posted successfully!");
       }
     } catch (err) {
@@ -145,8 +151,12 @@ const Post = (props) => {
     }
   };
 
+  const openUserProfile = () => {
+    // console.log(props.allPosts.author._id)
+  };
+
   const allCommentsTillNow = props.allPosts.comments;
-  
+
   return (
     <div>
       <div className="post d-flex flex-column gap-2 mx-3 my-2">
@@ -158,12 +168,25 @@ const Post = (props) => {
           </div>
           <div className="r-post-con">
             <div className="d-flex gap-2 align-items-center">
-              <h6 className="m-0">{props.allPosts.author.fullname}</h6>
+              <h6 className="m-0" onClick={openUserProfile}>
+                <Link
+                  to={
+                    props.allPosts.author._id === userInfo._id
+                      ? `/profile`
+                      : `/profile/user/${props.allPosts.author._id}`
+                  }
+                >
+                  {props.allPosts.author.fullname}
+                </Link>
+                {/* <Link to={`/profile/user/${props.allPosts.author._id}`}>
+                  {props.allPosts.author.fullname}
+                </Link> */}
+              </h6>
               <div className="text-secondary d-flex align-items-center gap-2">
                 <div style={{ width: "20px" }}>
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png"
-                    alt=""
+                    alt="Verified"
                     className="w-100"
                   />
                 </div>
@@ -255,20 +278,20 @@ const Post = (props) => {
 
             {allCommentsTillNow.length > 0 &&
               allCommentsTillNow.map((comment, index) => (
-                  <div className="d-flex flex-column" key={index}>
-                    <hr className="m-0 mx-1" />
-                    <div className="d-flex flex-row card my-2 bg-transparent">
-                      <div className="avatar name-n-avatar rounded-pill overflow-hidden bg-light">
-                        <Avatar image={props.allPosts.author.profileImg} />
-                      </div>
-                      <div className="comment px-2 d-flex flex-column justify-content-center gap-1">
-                        <h6 className="m-0 text-white">{comment.commentedBy.fullname}</h6>
-                        <p className="m-0 text-white">
-                          {comment.commentText}
-                        </p>
-                      </div>
+                <div className="d-flex flex-column" key={index}>
+                  <hr className="m-0 mx-1" />
+                  <div className="d-flex flex-row card my-2 bg-transparent">
+                    <div className="avatar name-n-avatar rounded-pill overflow-hidden bg-light">
+                      <Avatar image={props.allPosts.author.profileImg} />
+                    </div>
+                    <div className="comment px-2 d-flex flex-column justify-content-center gap-1">
+                      <h6 className="m-0 text-white">
+                        {comment.commentedBy.fullname}
+                      </h6>
+                      <p className="m-0 text-white">{comment.commentText}</p>
                     </div>
                   </div>
+                </div>
               ))}
           </>
         )}
