@@ -1,13 +1,32 @@
-import React, { useState } from "react";
-import Avatar from "../avatar/Avatar";
 import "./sidebar.css";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"
 
 const Sidebar = () => {
   const imgUrl =
     "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
 
-    const userInfo = useSelector(state => state.auth.user)
+    const userInfo = useSelector(state => state.auth.user);
+    const navigate = useNavigate(); // Initialize useNavigate
+
+    axios.defaults.withCredentials = true;
+  
+    // Function to navigate to profile
+    const goToProfile = () => {
+      navigate("/profile"); // Navigate to profile route
+    };
+  
+    // Function to navigate back to home
+    const goToHome = () => {
+      navigate("/"); // Navigate to home route
+    };
+
+    const logOut = () => {
+      localStorage.removeItem("token")
+      localStorage.removeItem("persist:root")
+      navigate("/login")
+    }
 
   return (
     <>
@@ -20,6 +39,7 @@ const Sidebar = () => {
               <div
                 className="option d-flex align-items-center gap-4 rounded-pill px-3 py-3 pe-4"
                 role="button"
+                onClick={goToHome}
               >
                 <div className="logo-con d-flex align-items-center justify-content-center">
                   <i className="fa-solid fa-house fa-xl"></i>
@@ -31,6 +51,7 @@ const Sidebar = () => {
               <div
                 className="option d-flex align-items-center gap-4 rounded-pill px-3 py-3 pe-4"
                 role="button"
+                onClick={goToProfile}
               >
                 <div className="logo-con d-flex align-items-center justify-content-center">
                   <i className="fa-solid fa-user fa-xl"></i>
@@ -42,6 +63,7 @@ const Sidebar = () => {
               <div
                 className="option d-flex align-items-center gap-4 rounded-pill px-3 py-3 pe-4"
                 role="button"
+                onClick={logOut}
               >
                 <div className="logo-con d-flex align-items-center justify-content-center">
                   <i className="fa-solid fa-right-from-bracket fa-xl"></i>
