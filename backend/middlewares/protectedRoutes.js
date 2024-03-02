@@ -20,11 +20,11 @@ const protectedRoutes = async (req, res, next) => {
         res.status(401).json({ error: "Token invalid" });
       } else {
         const { _id } = payload;
-        console.log("payload is: ", payload);
+        // console.log("payload is: ", payload);
         userModel
           .findById(_id)
           .then((dbUser) => {
-            console.log("Authenticated user:", dbUser); // Log the authenticated user
+            // console.log("Authenticated user:", dbUser); // Log the authenticated user
             req.user = dbUser;
             next();
           })

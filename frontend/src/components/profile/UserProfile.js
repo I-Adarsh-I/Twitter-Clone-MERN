@@ -43,7 +43,7 @@ const UserProfile = () => {
   // };
 
   // Show user details dynamically
-  const userDetails = async () => {
+  const fetchUserDetails = async () => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -54,9 +54,10 @@ const UserProfile = () => {
       const resp = await axios.get(`${api_key}/user/${id}`, config);
       setLoading(true);
       if (resp.status === 200) {
+        const userDetailsJSON = JSON.stringify(resp.data.userDetails);
+        localStorage.setItem("User", userDetailsJSON);
         // console.log(resp.data.userDetails);
-        const currentUserProfile = resp.data.userDetails;
-        setUser(currentUserProfile);
+        setUser(resp.data.userDetails); // Set user state with fetched data
         setLoading(false);
       } else {
         toast.error(resp.data.error);
@@ -66,6 +67,12 @@ const UserProfile = () => {
       toast.error("Internal server error");
     }
   };
+
+  useEffect(() => {
+    fetchUserDetails(); // Fetch user details from server if not found in local storage
+  }, []);
+  const userInformation = JSON.parse(localStorage.getItem("User"));
+  
 
   //Follow/unfollow logic
   const followHandler = async () => {
@@ -77,15 +84,16 @@ const UserProfile = () => {
     };
 
     const request = {
-      userId: id
-    }
-  
+      userId: id,
+    };
+
     try {
-      const resp = await axios.put(`${api_key}/follow`,request, config);
+      const resp = await axios.put(`${api_key}/follow`, request, config);
       console.log(resp); // Log the response to inspect any error messages
-  
+
       if (resp.status === 200) {
         toast.success(resp.data.message);
+        fetchUserDetails();
       } else {
         toast.error("Failed to follow user.");
       }
@@ -98,10 +106,6 @@ const UserProfile = () => {
       }
     }
   };
-
-  useEffect(() => {
-    userDetails();
-  }, []);
 
   return (
     <>
@@ -125,7 +129,10 @@ const UserProfile = () => {
               <Avatar image={user.profileImg} br={"rounded-pill"} />
             </div>
             <div className="editProfile">
-              <button className="btn rounded-pill bg-white text-black border fw-semibold" onClick={followHandler}>
+              <button
+                className="btn rounded-pill bg-white text-black border fw-semibold"
+                onClick={followHandler}
+              >
                 Follow
               </button>
             </div>
@@ -170,16 +177,30 @@ const UserProfile = () => {
               <div className="info-text">DD-MM-YYYY</div>
             </div>
           </div>
-          <div className="mx-4 d-flex gap-3">
-            <div className="d-flex gap-1">
-              <p>{user.following > 0 ? user.following.length : "0"}</p>
-              <p className="text-secondary">Following</p>
+          <>
+            <div className="mx-4 d-flex gap-3">
+              <div className="d-flex gap-1">
+                <p>
+                  {userInformation &&
+                  userInformation.following &&
+                  userInformation.following.length > 0
+                    ? userInformation.following.length
+                    : 0}
+                </p>
+                <p className="text-secondary">Following</p>
+              </div>
+              <div className="d-flex gap-1">
+                <p>
+                  {userInformation &&
+                  userInformation.followers &&
+                  userInformation.followers.length > 0
+                    ? userInformation.followers.length
+                    : 0}
+                </p>
+                <p className="text-secondary">Followers</p>
+              </div>
             </div>
-            <div className="d-flex gap-1">
-              <p>{user.followers > 0 ? user.followers.length : "0"}</p>
-              <p className="text-secondary">Followers</p>
-            </div>
-          </div>
+          </>
           <div className="post-sec-head d-flex flex-column align-items-center">
             <p className="m-0">All Posts</p>
             <div className="underline"></div>

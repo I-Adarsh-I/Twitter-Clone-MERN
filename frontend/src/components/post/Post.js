@@ -9,10 +9,6 @@ const Post = (props) => {
   const [isLiked, setIsLiked] = useState(false);
   const [commentBox, setCommentBox] = useState(false);
   const [commentText, setCommentText] = useState("");
-  const [isLoggedInUser, setIsLoggedInUser] = useState(false);
-
-  const imgUrl =
-    "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
 
   const api_key = process.env.REACT_APP_BASE_API;
   const token = localStorage.getItem("token");
@@ -151,8 +147,21 @@ const Post = (props) => {
     }
   };
 
-  const openUserProfile = () => {
-    // console.log(props.allPosts.author._id)
+  //Delete post
+  const handleDeletePost = async () => {
+    const token = localStorage.getItem('token')
+
+    try {
+      const resp = await axios.delete(`${api_key}/deletepost/${props.allPosts._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      props.getAllPosts();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const allCommentsTillNow = props.allPosts.comments;
@@ -168,8 +177,9 @@ const Post = (props) => {
           </div>
           <div className="r-post-con">
             <div className="d-flex gap-2 align-items-center">
-              <h6 className="m-0" onClick={openUserProfile}>
+              <h6 className="m-0">
                 <Link
+                  className="text-decoration-none text-white"
                   to={
                     props.allPosts.author._id === userInfo._id
                       ? `/profile`
@@ -178,11 +188,8 @@ const Post = (props) => {
                 >
                   {props.allPosts.author.fullname}
                 </Link>
-                {/* <Link to={`/profile/user/${props.allPosts.author._id}`}>
-                  {props.allPosts.author.fullname}
-                </Link> */}
               </h6>
-              <div className="text-secondary d-flex align-items-center gap-2">
+              <div className="text-secondary d-flex align-items-center gap-1">
                 <div style={{ width: "20px" }}>
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png"
@@ -196,6 +203,15 @@ const Post = (props) => {
               </div>
             </div>
             <div>
+              <div className="img-sec">
+                {props.allPosts.image && (
+                  <img
+                    className="img-fluid post-img rounded mt-2"
+                    src={props.allPosts.image}
+                    alt="post"
+                  />
+                )}
+              </div>
               <p className="text-light">{props.allPosts.description}</p>
             </div>
           </div>
@@ -244,8 +260,8 @@ const Post = (props) => {
             </div>
             <p className="m-0 mb-1">1</p>
           </div>
-          <div className="icons" role="button">
-            <i className="fa-regular fa-bookmark"></i>
+          <div className="icons" role="button" onClick={handleDeletePost}>
+            <i className="fa-solid fa-trash" style={{ color: "#e00000" }}></i>
           </div>
         </div>
         {/* Comments */}

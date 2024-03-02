@@ -108,11 +108,11 @@ const Profile = () => {
           </div>
           <div className="mx-4 d-flex gap-3">
             <div className="d-flex gap-1">
-              <p>167</p>
+              <p>{userInfo.following.length}</p>
               <p className="text-secondary">Following</p>
             </div>
             <div className="d-flex gap-1">
-              <p>167</p>
+              <p>{userInfo.followers.length}</p>
               <p className="text-secondary">Followers</p>
             </div>
           </div>
@@ -124,8 +124,6 @@ const Profile = () => {
         </div>
         <div className="">
           {userPosts.length > 0 && userPosts.map((post, index) => <UserPost key={index} allPosts={post}/>)}
-          {/* <Post />
-          <Post /> */}
         </div>
       </div>
     </>

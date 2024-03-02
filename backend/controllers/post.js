@@ -5,7 +5,7 @@ var postModel = require("../models/post_model");
 var protectedRoutes = require("../middlewares/protectedRoutes");
 
 module.exports.createPostHandler = async (req, res) => {
-  const { description, location, image } = req.body;
+  const { description, image } = req.body;
 
   try {
     if (!description) {
@@ -19,6 +19,7 @@ module.exports.createPostHandler = async (req, res) => {
     const postObj = new postModel({
       description,
       author: req.user,
+      image
     });
     const newPost = await postObj.save();
 
