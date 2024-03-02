@@ -29,6 +29,12 @@
 .open-menu{
     display: none;
 }
+.input-r:active{
+    border: none;
+}
+:focus-visible {
+    outline: unset;
+}
 
 @media screen and (min-width: 481px) and (max-width: 780px) {
     .nav-item{

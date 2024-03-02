@@ -158,7 +158,9 @@ const UserPost = (props) => {
           "Content-Type": "application/json",
         },
       });
-      props.getAllPosts();
+      if(resp.status === 200){
+        props.getAllPosts();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -311,7 +313,7 @@ const UserPost = (props) => {
               ))}
           </>
         )}
-        <Toaster />
+        <Toaster position="top-right"/>
       </div>
       <hr className="m-0" />
     </div>

@@ -34,7 +34,7 @@ module.exports.showAllPosts = async (req, res) => {
   try {
     const allPosts = await postModel
       .find()
-      .populate("author", "_id fullname profileImg DOB otherLinks location followers following")
+      .populate("author", "_id fullname profileImg DOB otherLinks location followers following username")
       .populate("comments.commentedBy", "_id fullname")
       .populate("retweets.retweetedBy", "_id fullname")
     res.status(200).json({ posts: allPosts });
@@ -42,6 +42,8 @@ module.exports.showAllPosts = async (req, res) => {
     console.log(err);
   }
 };
+
+//All posts of logged in user
 module.exports.showAllPostsOfLoggedInUser = async (req, res) => {
   try {
     //Finding posts made by author using author id and populating the author with fields - id, fullname, profile image
@@ -54,6 +56,36 @@ module.exports.showAllPostsOfLoggedInUser = async (req, res) => {
     console.log(err);
   }
 };
+
+
+//All post of a user
+module.exports.showPostsOfUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Check if the userId is provided
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const postsOfUser = await postModel
+      .find({ author: userId }) // Find posts by the specified user ID
+      .populate("author", "_id fullname profileImg DOB otherLinks location followers following username")
+      .populate("comments.commentedBy", "_id fullname")
+      .populate("retweets.retweetedBy", "_id fullname");
+
+    if (!postsOfUser) {
+      return res.status(404).json({ error: 'No posts found for this user' });
+    }
+
+    res.status(200).json({ posts: postsOfUser });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+//Delete post
 module.exports.deletePost = async (req, res) => {
   try {
     const postDel = await postModel
@@ -79,6 +111,7 @@ module.exports.deletePost = async (req, res) => {
   }
 };
 
+//Like functionality
 module.exports.likes = async (req, res) => {
   try {
     const like = await postModel
@@ -111,6 +144,7 @@ module.exports.likes = async (req, res) => {
   }
 };
 
+//Unlike functionality
 module.exports.unlike = async (req, res) => {
   try {
     const unlike = await postModel
@@ -138,7 +172,7 @@ module.exports.unlike = async (req, res) => {
   }
 };
 
-//Comment
+//Comment functionality
 module.exports.comment = async (req, res) => {
   const { postId, commentText } = req.body;
   const comment = {
@@ -219,7 +253,7 @@ module.exports.retweetHandler = async (req, res) => {
   }
 };
 
-//Additional
+//Additional functionality
 module.exports.postLikeAndUnlike = async (req, res) => {
   try {
     if (!req.user) {

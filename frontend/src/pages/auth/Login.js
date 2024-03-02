@@ -44,7 +44,7 @@ function Login() {
       if (resp.status === 200) {
         toast.success(resp.data.message);
         localStorage.setItem("token", resp.data.token.token);
-        navigate('/')
+        navigate("/");
         // console.log(resp.data.user.existingUser);
         return dispatch(logginSuccessful(resp.data.user.existingUser));
       } else if (resp.status === 401) {
@@ -64,7 +64,14 @@ function Login() {
     <div className="main">
       <div className="container d-flex justify-content-center align-items-center login-main-con">
         <div className="d-flex px-5 py-4 flex-column card gap-4 login-card bg-black">
-          <div className="logo-con-main text-center text-light">Logo</div>
+          <div className="logo-con-main text-center text-light">
+            <img
+              src="./DAAK.png"
+              alt="DAAK"
+              width={"50px"}
+              className="logo-sidebar"
+            />
+          </div>
           <div className="btn-grp w-100 d-flex gap-3">
             <button className="btn bg-light p-2 rounded-pill w-50 bg-transparent border border-secondary">
               <img src="./google.png" alt="Google" />

@@ -4,8 +4,18 @@ import axios from "axios";
 import { Toaster, toast } from "alert";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { formatDistanceToNow } from "date-fns";
+
+
+const formatTimeElapsed = (postedAt) => {
+  const postedDate = new Date(postedAt);
+  const timeElapsed = formatDistanceToNow(postedDate, { addSuffix: true });
+  return timeElapsed.replace(/^about\s/i, "");
+};
 
 const Post = (props) => {
+  const timeElapsed = formatTimeElapsed(props.allPosts.postedAt);
+
   const [isLiked, setIsLiked] = useState(false);
   const [commentBox, setCommentBox] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -149,16 +159,22 @@ const Post = (props) => {
 
   //Delete post
   const handleDeletePost = async () => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
 
     try {
-      const resp = await axios.delete(`${api_key}/deletepost/${props.allPosts._id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      props.getAllPosts();
+      const resp = await axios.delete(
+        `${api_key}/deletepost/${props.allPosts._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if(resp.status === 200){
+        props.getAllPosts();
+        toast('Post deleted successfully')
+      }
     } catch (err) {
       console.error(err);
     }
@@ -197,9 +213,11 @@ const Post = (props) => {
                     className="w-100"
                   />
                 </div>
-                <span>@username</span>
+                {props.allPosts.author.username && (
+                  <span>@{props.allPosts.author.username}</span>
+                )}
                 <span>•</span>
-                <span>3h</span>
+                <span>{timeElapsed}</span>
               </div>
             </div>
             <div>
@@ -260,9 +278,11 @@ const Post = (props) => {
             </div>
             <p className="m-0 mb-1">1</p>
           </div>
-          <div className="icons" role="button" onClick={handleDeletePost}>
-            <i className="fa-solid fa-trash" style={{ color: "#e00000" }}></i>
-          </div>
+          {props.allPosts.author._id === userInfo._id && (
+            <div className="icons" role="button" onClick={handleDeletePost}>
+              <i className="fa-solid fa-trash" style={{ color: "#e00000" }}></i>
+            </div>
+          )}
         </div>
         {/* Comments */}
         {commentBox && (
@@ -311,7 +331,7 @@ const Post = (props) => {
               ))}
           </>
         )}
-        <Toaster />
+        <Toaster position="top-right"/>
       </div>
       <hr className="m-0" />
     </div>

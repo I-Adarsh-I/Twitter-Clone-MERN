@@ -11,7 +11,7 @@ const {
   comment,
   postLikeAndUnlike,
   retweetHandler,
-  retweetHandler2,
+  showPostsOfUser,
 } = require("../controllers/post");
 
 router.post("/createpost", protectedRoutes, createPostHandler);
@@ -23,5 +23,6 @@ router.put("/unlike", protectedRoutes, unlike);
 router.put("/comment", protectedRoutes, comment);
 router.put('/retweet', protectedRoutes, retweetHandler);
 router.get('/likenunlike/:postId/like-state', protectedRoutes, postLikeAndUnlike);
+router.get('/user/allposts/:userId', protectedRoutes, showPostsOfUser)
 
 module.exports = router;

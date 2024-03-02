@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./profile.css";
 import Avatar from "../../components/avatar/Avatar";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import UserPost from "../post/UserPost";
+import Post from "../post/Post";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { Toaster, toast } from "alert";
+import { toast } from "alert";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -24,23 +24,23 @@ const UserProfile = () => {
 
   const userInfo = useSelector((state) => state.auth.user);
 
-  // const userAllPosts = async () => {
-  //   const config = {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   };
+  const userAllPosts = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
-  //   try {
-  //     const resp = await axios.get(`${api_key}/mygallery`, config);
-  //     if (resp.status === 200) {
-  //       setUserPosts(resp.data.posts);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+    try {
+      const resp = await axios.get(`${api_key}/user/allposts/${id}`, config);
+      if (resp.status === 200) {
+        setUserPosts(resp.data.posts);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Show user details dynamically
   const fetchUserDetails = async () => {
@@ -56,8 +56,7 @@ const UserProfile = () => {
       if (resp.status === 200) {
         const userDetailsJSON = JSON.stringify(resp.data.userDetails);
         localStorage.setItem("User", userDetailsJSON);
-        // console.log(resp.data.userDetails);
-        setUser(resp.data.userDetails); // Set user state with fetched data
+        setUser(resp.data.userDetails);
         setLoading(false);
       } else {
         toast.error(resp.data.error);
@@ -69,10 +68,11 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    fetchUserDetails(); // Fetch user details from server if not found in local storage
+    fetchUserDetails();
+    userAllPosts();
   }, []);
+
   const userInformation = JSON.parse(localStorage.getItem("User"));
-  
 
   //Follow/unfollow logic
   const followHandler = async () => {
@@ -89,13 +89,44 @@ const UserProfile = () => {
 
     try {
       const resp = await axios.put(`${api_key}/follow`, request, config);
-      console.log(resp); // Log the response to inspect any error messages
 
       if (resp.status === 200) {
         toast.success(resp.data.message);
         fetchUserDetails();
       } else {
         toast.error("Failed to follow user.");
+      }
+    } catch (err) {
+      console.log(err.response);
+      if (err.response && err.response.data && err.response.data.error) {
+        toast.error(err.response.data.error);
+      } else {
+        toast.error("Internal server error");
+      }
+    }
+  };
+
+  //Unfollow handler
+  const unFollowHandler = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const request = {
+      userId: id,
+    };
+
+    try {
+      const resp = await axios.put(`${api_key}/unfollow`, request, config);
+
+      if (resp.status === 200) {
+        toast.success(resp.data.message);
+        fetchUserDetails();
+      } else {
+        toast.error("Failed to unfollow user.");
       }
     } catch (err) {
       console.log(err.response); // Log the error response for debugging
@@ -129,35 +160,44 @@ const UserProfile = () => {
               <Avatar image={user.profileImg} br={"rounded-pill"} />
             </div>
             <div className="editProfile">
-              <button
-                className="btn rounded-pill bg-white text-black border fw-semibold"
-                onClick={followHandler}
-              >
-                Follow
-              </button>
+              {userInformation.followers.includes(userInfo._id) ? (
+                <button
+                  className="btn bg-transparent border text-white rounded-pill"
+                  onClick={unFollowHandler}
+                >
+                  Unfollow
+                </button>
+              ) : (
+                <button
+                  className="btn rounded-pill bg-white text-black border fw-semibold"
+                  onClick={followHandler}
+                >
+                  Follow
+                </button>
+              )}
             </div>
           </div>
           <div className="profileBiography mx-4">
-            <span>{user.fullname}</span>
+            <h5 className="m-0">{user.fullname}</h5>
             <p className="mb-3 text-secondary">@{user.fullname}</p>
             <p
               className="m-0 mb-2"
               style={{ wordWrap: "break-word", fontSize: "15px" }}
             >
-              Junior Software Developer || this || that
+              {userInformation.about}
             </p>
           </div>
           <div
-            className="additional-info row row-md-3 row-sm-2 g-2 mx-4 mb-3"
+            className="d-flex flex-wrap gap-3 additional-info mx-4 mb-3"
             style={{ fontSize: "15px" }}
           >
-            <div className="col col-4 d-flex gap-2 text-secondary">
+            <div className="d-flex gap-2 text-secondary">
               <div className="icon">
                 <i className="fa-solid fa-location-dot"></i>
               </div>
-              <div className="info-text">Location</div>
+              <div className="info-text">{userInformation.location}</div>
             </div>
-            <div className="col col-4 d-flex gap-2 text-secondary">
+            <div className="d-flex gap-2 text-secondary">
               <div className="icon">
                 <i className="fa-solid fa-paperclip"></i>
               </div>
@@ -166,15 +206,15 @@ const UserProfile = () => {
                   className="text-decoration-none"
                   style={{ color: "#1DA1F2" }}
                 >
-                  Profile/portfolio link
+                  {userInformation.otherLinks}
                 </Link>
               </div>
             </div>
-            <div className="col col-4 d-flex gap-2 text-secondary">
+            <div className="d-flex gap-2 text-secondary">
               <div className="icon">
                 <i className="fa-solid fa-calendar-days"></i>
               </div>
-              <div className="info-text">DD-MM-YYYY</div>
+              <div className="info-text">{userInformation.DOB}</div>
             </div>
           </div>
           <>
@@ -210,11 +250,10 @@ const UserProfile = () => {
         <div className="">
           {userPosts.length > 0 &&
             userPosts.map((post, index) => (
-              <UserPost key={index} allPosts={post} />
+              <Post key={index} allPosts={post} getAllPosts={userAllPosts}/>
             ))}
         </div>
       </div>
-      <Toaster position="top-right" />
     </>
   );
 };

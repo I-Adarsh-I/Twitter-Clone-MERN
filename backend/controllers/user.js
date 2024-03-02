@@ -124,7 +124,7 @@ module.exports.followHandler = async (req, res) => {
 //Unfollow handler
 module.exports.unFollowHandler = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const {userId} = req.body;
     const currentUser = req.user;
 
     const isAlreadyFollowing = currentUser.following.some(
@@ -180,5 +180,41 @@ module.exports.getAllUserDetails = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+//Edit profile information
+module.exports.editProfileInfo = async (req, res) => {
+  const { username, about, location, otherLinks, DOB, profileImg } = req.body;
+
+  try {
+    // Check if username is already taken
+    const isUsernameExist = await userModel.findOne({ username: username });
+    if (isUsernameExist) {
+      return res.status(400).json({ error: 'User already registered with this username' });
+    }
+
+    const userID = req.user._id;
+
+    const updatedInfo = {
+      username,
+      about,
+      location,
+      otherLinks,
+      DOB,
+      profileImg
+    };
+
+    const updatedRecord = await userModel.findByIdAndUpdate(
+      userID,
+      updatedInfo,
+      { new: true }
+    );
+
+    res.json(updatedRecord); // Send back the updated user record
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };

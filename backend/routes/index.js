@@ -6,6 +6,7 @@ const {
   followHandler,
   unFollowHandler,
   getAllUserDetails,
+  editProfileInfo,
 } = require("../controllers/user");
 const protectedRoutes = require("../middlewares/protectedRoutes");
 var router = express.Router();
@@ -17,7 +18,8 @@ router.get("/profile", protectedRoutes, (req, res) => {
 });
 router.post("/logout", logoutHandler);
 router.put("/follow", protectedRoutes, followHandler);
-router.put("/:id/unfollow", protectedRoutes, unFollowHandler);
+router.put("/unfollow", protectedRoutes, unFollowHandler);
 router.get('/user/:id', protectedRoutes, getAllUserDetails)
+router.put('/user/editinfo', protectedRoutes, editProfileInfo)
 
 module.exports = router;

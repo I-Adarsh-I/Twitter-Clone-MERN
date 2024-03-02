@@ -54,7 +54,14 @@ function Login() {
     <div className="main">
       <div className="container d-flex justify-content-center align-items-center login-main-con">
         <div className="d-flex px-5 py-4 flex-column card gap-4 login-card bg-black">
-          <div className="logo-con-main text-center text-light">Logo</div>
+          <div className="logo-con-main text-center text-light">
+            <img
+              src="./DAAK.png"
+              alt="DAAK"
+              width={"50px"}
+              className="logo-sidebar"
+            />
+          </div>
           <div className="btn-grp w-100 d-flex gap-3">
             <button className="btn bg-light p-2 rounded-pill w-50 bg-transparent border border-secondary">
               <img src="./google.png" alt="Google" />
@@ -150,7 +157,7 @@ function Login() {
           </form>
         </div>
       </div>
-      <Toaster position="top-right"/>
+      <Toaster position="top-right" />
     </div>
   );
 }

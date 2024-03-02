@@ -16,7 +16,7 @@ function DynamicRoute() {
   useEffect(() => {
     if (userInfo.isLoggedIn) {
       dispatch(logginSuccessful(userInfo.user));
-      if (window.location.pathname === "/login") {
+      if (window.location.pathname === "/login" || window.location.pathname === "/register") {
         navigate("/");
       }
     } else {

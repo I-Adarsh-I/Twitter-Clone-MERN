@@ -6,7 +6,7 @@ import axios from "axios";
 import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { Toaster, toast } from "alert";
+import { toast } from "alert";
 
 const Feed = () => {
   const [userPost, setUserPost] = useState("");
@@ -39,7 +39,7 @@ const Feed = () => {
 
       const resp = await axios.post(`${api_key}/upload`, formData);
       toast.success("Post created successfully");
-      handleCloseModal()
+      handleCloseModal();
       return resp;
     } catch (err) {
       console.error("Error uploading file: ", err);
@@ -56,16 +56,16 @@ const Feed = () => {
       imgRes = await handleFileUpload();
     }
 
-    let request
-    if (imgRes){
+    let request;
+    if (imgRes) {
       request = {
         description: userPost,
         image: `${api_key}/files/${imgRes.data.filename}`,
       };
-    }else{
-      request={
-        description: userPost
-      }
+    } else {
+      request = {
+        description: userPost,
+      };
     }
 
     try {
@@ -78,8 +78,8 @@ const Feed = () => {
       const resp = await axios.post(`${api_key}/createpost`, request, config);
       if (resp.status === 201) {
         setUserPost("");
-        setImage({preview: "", data: ""})
-        toast.success("Posted successfulluy")
+        setImage({ preview: "", data: "" });
+        toast.success("Posted successfulluy");
         fetchAllPosts();
       } else if (resp.status === 400) {
         console.log(resp.data.error);
@@ -100,7 +100,6 @@ const Feed = () => {
       const resp = await axios.get(`${api_key}/allposts`, config);
       if (resp.status === 200) {
         setAllPosts(resp.data.posts);
-        
       }
     } catch (err) {
       console.log(err);
@@ -114,7 +113,10 @@ const Feed = () => {
   return (
     <div className="feed-main">
       <div className="top-nav d-flex align-items-center justify-content-between">
-        <div className="h5 mx-3">Home</div>
+        <div className=" d-flex flex-column align-items-center justify-content-between h5 mx-3 mb-2">
+          <p className="m-0">Feed</p>
+          <div className="underline w-100"></div>
+        </div>
       </div>
       <hr className="m-0" />
       <div className="card border-dark-subtle bg-transparent p-2 border-0 mx-2">
@@ -227,7 +229,10 @@ const Feed = () => {
                 </div>
               </form>
               <div className="post-btn d-flex justify-content-end">
-                <button className="btn btn-primary px-4 rounded-pill" onClick={createPost}>
+                <button
+                  className="btn btn-primary px-4 rounded-pill"
+                  onClick={createPost}
+                >
                   Post
                 </button>
               </div>
@@ -240,7 +245,6 @@ const Feed = () => {
         allPosts.map((post, index) => (
           <Post key={index} allPosts={post} getAllPosts={fetchAllPosts} />
         ))}
-        <Toaster position="bottom-right"/>
     </div>
   );
 };
