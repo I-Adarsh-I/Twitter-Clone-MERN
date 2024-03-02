@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./profile.css";
 import Avatar from "../../components/avatar/Avatar";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 
 const Profile = () => {
   const [userPosts, setUserPosts] = useState([]);
+  const [isPopupOpen, setPopupOpen] = useState(false);
 
   const imgUrl =
     "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg";
@@ -15,7 +16,7 @@ const Profile = () => {
   const api_key = process.env.REACT_APP_BASE_API;
   const token = localStorage.getItem("token");
 
-  const userInfo = useSelector(state => state.auth.user)
+  const userInfo = useSelector((state) => state.auth.user);
 
   const userAllPosts = async () => {
     const config = {
@@ -33,6 +34,22 @@ const Profile = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    // Do something with the selected file
+    console.log('Selected file:', file);
+  };
+
+  const togglePopup = () => {
+    setPopupOpen(!isPopupOpen);
   };
 
   useEffect(() => {
@@ -61,9 +78,101 @@ const Profile = () => {
               <Avatar image={imgUrl} br={"rounded-pill"} />
             </div>
             <div className="editProfile">
-              <button className="btn rounded-pill text-light border">
+              <button
+                className="btn rounded-pill text-light border"
+                onClick={togglePopup}
+              >
                 Edit profile
               </button>
+              {isPopupOpen && (
+                <div className="popup">
+                  <div className="popup-inner">
+                    <div className="popup-content">
+                      <div className="left-side">
+                        <img src={imgUrl} alt="Profile" />
+                        <div>
+                          <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={handleFileChange}
+                          />
+                          <button onClick={handleButtonClick}>
+                            Choose File
+                          </button>
+                        </div>
+                      </div>
+                      <div className="right-side">
+                        <form>
+                          <div className="form-floating mb-3">
+                            <input
+                              type="email"
+                              className="form-control bg-transparent text-white border-secondary"
+                              id="floatingInput"
+                              name="email"
+                              placeholder="name@example.com"
+                            />
+                            <label
+                              htmlFor="floatingInput"
+                              className="floating-labels text-secondary"
+                            >
+                              Bio
+                            </label>
+                          </div>
+                          <div className="form-floating mb-3">
+                            <input
+                              type="password"
+                              className="form-control bg-transparent text-white border-secondary"
+                              id="floatingPassword"
+                              name="password"
+                              placeholder="Password"
+                            />
+                            <label
+                              htmlFor="floatingPassword"
+                              className="floating-labels text-secondary"
+                            >
+                              Link
+                            </label>
+                          </div>
+                          <div className="form-floating mb-3">
+                            <input
+                              type="password"
+                              className="form-control bg-transparent text-white border-secondary"
+                              id="floatingPassword"
+                              name="password"
+                              placeholder="Password"
+                            />
+                            <label
+                              htmlFor="floatingPassword"
+                              className="floating-labels text-secondary"
+                            >
+                              Location
+                            </label>
+                          </div>
+                          <div className="form-floating mb-3">
+                            <input
+                              type="password"
+                              className="form-control bg-transparent text-white border-secondary"
+                              id="floatingPassword"
+                              name="password"
+                              placeholder="Password"
+                            />
+                            <label
+                              htmlFor="floatingPassword"
+                              className="floating-labels text-secondary"
+                            >
+                              Date of Birth
+                            </label>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <button className="close-btn" onClick={togglePopup}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className="profileBiography mx-4">

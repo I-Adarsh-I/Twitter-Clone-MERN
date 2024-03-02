@@ -27,7 +27,6 @@ function DynamicRoute() {
         navigate('/login');
       }
     }
-    // console.log(userInfo)
   }, []);
 
   return (
